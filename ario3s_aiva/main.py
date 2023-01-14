@@ -4,24 +4,30 @@ import tomli
 import pathlib
 import os
 import subprocess
+from rich import print
+import sys
 
 
-CURRENT_USER = os.getlogin()
-CONFIG_FILE = pathlib.Path(f"/home/{CURRENT_USER}/.aiva.toml")
+CURRENT_USER: str = os.getlogin()
+CONFIG_FILE: pathlib.Path = pathlib.Path(f"/home/{CURRENT_USER}/.aiva.toml")
+
 
 # check config file
-if not CONFIG_FILE.exists():
-    print(f"Config file does not exists at {CONFIG_FILE}")
+def get_config() -> dict:
+    if not CONFIG_FILE.exists():
+        print(f"[bold red]Config file does not exists at [/]{CONFIG_FILE}")
+        sys.exit()
+
+    with open(CONFIG_FILE, "rb") as config_file:
+        return tomli.load(config_file)
 
 
-with open(CONFIG_FILE, "rb") as config_file:
-    config: dict[str, Any] = tomli.load(config_file)
+app = typer.Typer(callback=get_config)
 
-
-server = config["server"]
-
-
-app = typer.Typer()
+# global server config
+if get_config():
+    print(f"[bold green]Config File Found![/] {CONFIG_FILE}\n")
+    server: dict = get_config()["server"]
 
 
 def get_status() -> int:
@@ -57,7 +63,7 @@ def disconnect():
     """
 
     if get_status() == 0:
-        command = 'kill -9 $(pgrep -axl ssh | cut -d " " -f 1)'
+        command: str = f'kill -9 $(pgrep -axl ssh | grep {server["username"]}@{server["ip"]} | cut -d " " -f 1)'
         kill_result: int = subprocess.call(command, shell=True)
 
         if kill_result == 0:
