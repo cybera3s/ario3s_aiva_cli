@@ -39,7 +39,7 @@ def get_status() -> int:
 
 
 @app.command()
-def connect(port: int = 4321):
+def connect(port: int = typer.Option(4321, "--port", "-p", help="Port to create SOCKS proxy")):
     """
     connect to server and creates a SOCKS proxy with provided port
     """
