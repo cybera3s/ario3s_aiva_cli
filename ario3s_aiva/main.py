@@ -73,13 +73,23 @@ def disconnect():
 
 
 @app.command()
-def status():
+def status(
+    detail: bool = typer.Option(
+        False, "--detail", "-d", help="Show detail about Connection"
+    )
+):
     """
     get status of ssh connection
     """
     status_result = get_status()
 
     if status_result == 0:
-        typer.echo("You have open session")
+        if detail:
+            data = subprocess.check_output(PROCESS_INFO_CMD, shell=True).decode()
+            connected_port: str = data.split(" ")[5]
+
+            print(f"[blue bold]SOCKS proxy Listening at {connected_port}")
+
+        print("[bold yellow]You have open session!")
     else:
-        typer.echo("You are not connected!")
+        print("[bold cyan]You are not connected!")
