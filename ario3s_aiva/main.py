@@ -29,11 +29,13 @@ if get_config():
     print(f"[bold green]Config File Found![/] {CONFIG_FILE}\n")
     server: dict = get_config()["server"]
 
+# get process id with its info
+PROCESS_INFO_CMD: str = f'pgrep -alx ssh | grep {server["username"]}@{server["ip"]}'
+
 
 def get_status() -> int:
     """return status of ssh session"""
-    command = f'pgrep -alx ssh | grep {server["username"]}@{server["ip"]}'
-    return subprocess.call(command, shell=True, stdout=subprocess.DEVNULL)
+    return subprocess.call(PROCESS_INFO_CMD, shell=True, stdout=subprocess.DEVNULL)
 
 
 @app.command()
@@ -44,7 +46,7 @@ def connect(port: int = 4321):
     status: int = get_status()
 
     if status == 0:
-        typer.echo("You already have open session, enjoy!")
+        print("[bold cyan]You already have open session, enjoy!")
         raise typer.Exit(code=1)
 
     connect_command = f'ssh -f -N -D {port} \
@@ -53,7 +55,7 @@ def connect(port: int = 4321):
     res: int = subprocess.call(connect_command, shell=True)
 
     if res == 0:
-        typer.echo(f"SOCKS Proxy Successfully created on 127.0.0.1:{port}")
+        print(f"[bold green]SOCKS Proxy Successfully created on [/]127.0.0.1:{port}")
 
 
 @app.command()
@@ -63,7 +65,7 @@ def disconnect():
     """
 
     if get_status() == 0:
-        command: str = f'kill -9 $(pgrep -axl ssh | grep {server["username"]}@{server["ip"]} | cut -d " " -f 1)'
+        command: str = f'kill -9 $({PROCESS_INFO_CMD} | cut -d " " -f 1)'
         kill_result: int = subprocess.call(command, shell=True)
 
         if kill_result == 0:
