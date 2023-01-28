@@ -12,8 +12,9 @@
 ```
 [server]
 ip = <server-ip>
-port = <connections-port>
+server_port = <server-port>
 username = '<username>'
+local_port = <local-port>
 ```
 </p>
 
