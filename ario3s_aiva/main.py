@@ -30,7 +30,7 @@ if get_config():
     server: dict = get_config()["server"]
 
 # get process id with its info
-PROCESS_INFO_CMD: str = f'pgrep -alx ssh | grep {server["username"]}@{server["ip"]}'
+PROCESS_INFO_CMD: str = f'pgrep -alx ssh | grep "D {server["local_port"]} {server["username"]}@{server["ip"]}"'
 
 
 def get_status() -> int:
@@ -39,7 +39,11 @@ def get_status() -> int:
 
 
 @app.command()
-def connect(port: int = typer.Option(4321, "--port", "-p", help="Port to create SOCKS proxy")):
+def connect(
+    port: int = typer.Option(
+        server["local_port"], "--port", "-p", help="Port to create SOCKS proxy"
+    )
+):
     """
     connect to server and creates a SOCKS proxy with provided port
     """
@@ -50,7 +54,7 @@ def connect(port: int = typer.Option(4321, "--port", "-p", help="Port to create 
         raise typer.Exit(code=1)
 
     connect_command = f'ssh -f -N -D {port} \
-        {server["username"]}@{server["ip"]} -p {server["port"]}'
+        {server["username"]}@{server["ip"]} -p {server["server_port"]}'
 
     res: int = subprocess.call(connect_command, shell=True)
 
