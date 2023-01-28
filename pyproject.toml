@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ario3s-aiva"
-version = "0.4.0"
+version = "0.5.0"
 description = ""
 authors = ["ario <cybera.3s@gmail.com>"]
 readme = "README.md"
