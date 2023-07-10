@@ -3,6 +3,7 @@ import tomli
 from typing import Any
 import typer
 import sys
+from rich import print
 
 # Local imports
 from ario3s_aiva.config import CONFIG_FILE
@@ -54,7 +55,7 @@ def check_config_file():
             sys.exit()
 
     else:
-        print(f"[bold red]Config file does not exists at [/]{CONFIG_FILE}")
+        print(f"[bold red]Config file does not exists at: [/]{CONFIG_FILE}")
         raise typer.Exit()
 
 
