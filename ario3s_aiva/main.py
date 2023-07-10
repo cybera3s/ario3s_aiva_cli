@@ -60,11 +60,12 @@ def get_servers_list() -> list:
         return []
 
 
-def get_server_data(server_label: str) -> dict:
+def get_server_data(server_label: str) -> dict | None:
     """
     Returns server information
+    if server does not exists returns None
 
-    (dict) server info
+    (dict or None) server info
     {
         "ip": IP,
         "port": PORT,
@@ -73,8 +74,9 @@ def get_server_data(server_label: str) -> dict:
     """
 
     section_name = f"server_{server_label}"
-    return get_config()[section_name]
+    return get_config().get(section_name)
 
+print(get_server_data("aivap5"))
 
 def get_process_info_cmd():
     """
