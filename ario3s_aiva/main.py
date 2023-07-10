@@ -1,11 +1,13 @@
 import typer
 
 # local imports
-from ario3s_aiva.commands import connect
-from ario3s_aiva.commands import disconnect
-from ario3s_aiva.commands import status
-from ario3s_aiva.commands import restart
-from ario3s_aiva.commands import list_servers
+from ario3s_aiva.commands import (
+    connect,
+    disconnect,
+    status,
+    restart,
+    list_servers,
+)
 from ario3s_aiva.utils.config_file import check_config_file
 
 

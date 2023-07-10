@@ -1,1 +1,1 @@
-from rich import print
+from rich import print  # NOQA: F401
