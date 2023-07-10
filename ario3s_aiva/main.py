@@ -287,11 +287,11 @@ def status(
             server_label = get_default_config().get("server_label")
             ip = get_server_data(server_label)['ip']
 
-            print(f"[blue bold]SOCKS proxy Listening at: {bind_port}")
-            print(f"[blue bold]Server label: {server_label}")
-            print(f"[blue bold]Server IP: {ip}")
+            print(f"SOCKS proxy Listening at: [blue bold]{bind_port}")
+            print(f"Server label: [blue bold]{server_label}")
+            print(f"Server IP: [blue bold]{ip}")
 
-        print("[bold green]You have open session!")
+        print("\n[bold green]You have open session!")
 
     else:
         print("[bold cyan]You are not connected!")
