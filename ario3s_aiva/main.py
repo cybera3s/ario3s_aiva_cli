@@ -152,7 +152,6 @@ def get_connect_command(server_info: dict) -> str:
     """
     Get dynamic ssh tunnel command with provided server info data
     """
-
     ip = server_info["ip"]
     port = server_info["port"]
     bind_port = get_default_config().get("local_port")
@@ -163,6 +162,8 @@ def get_connect_command(server_info: dict) -> str:
 
     return command
 
+
+############# Commands #############
 
 @app.command(name="servers_list", help="Get list of available servers")
 def list_servers():
@@ -191,12 +192,17 @@ def connect():
         raise typer.Exit(code=1)
 
     else:
-        connect_command = get_connect_command()
+        label = get_default_server_label()
+        default_server_info = get_server_data(label)
+        connect_command = get_connect_command(default_server_info)
         conn_result: CompletedProcess = subprocess.run(connect_command, shell=True)
 
         if conn_result.returncode == 0:
+
+            bind_port = get_default_config().get("local_port")
+
             print(
-                f"[bold green]SOCKS Proxy Successfully created on [/]127.0.0.1:{port}"
+                f"[bold green]SOCKS Proxy Successfully created on [/]127.0.0.1:{bind_port}"\
             )
         else:
             print(f"[bold red]SOCKS Proxy failed to create!")
