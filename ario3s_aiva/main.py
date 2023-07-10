@@ -35,12 +35,20 @@ if get_config():
     servers: dict = get_config()
 
 
+def get_default_config():
+    """
+    Returns default section of config file
+    """
+
+    return get_config()["default"]
+
+
 def get_default_server_label() -> str:
     """
     Returns default server label from default section
     """
 
-    default = get_config()["default"]
+    default = get_default_config
     return default["server_label"]
 
 
@@ -76,7 +84,6 @@ def get_server_data(server_label: str) -> dict | None:
     section_name = f"server_{server_label}"
     return get_config().get(section_name)
 
-print(get_server_data("aivap5"))
 
 def get_process_info_cmd():
     """
@@ -84,9 +91,16 @@ def get_process_info_cmd():
     """
 
     default_server = get_default_server_label()
+    server_info = get_server_data(default_server)
 
-    PROCESS_INFO_CMD: str = f'pgrep -alx ssh | grep "D {server["local_port"]} {server["username"]}@{server["ip"]}"'
-    return PROCESS_INFO_CMD
+    if server_info:
+        
+        ip = server_info['ip']
+        local_port = 
+        return f'pgrep -alx ssh | grep "D {server["local_port"]} {server["username"]}@{ip}"'
+    
+    else:
+        ...
 
 
 def get_status() -> int:
