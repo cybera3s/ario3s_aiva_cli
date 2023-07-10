@@ -1,4 +1,5 @@
 # Local imports
+from ario3s_aiva.commands import print
 from ario3s_aiva.utils.config_file import get_servers_list
 
 
