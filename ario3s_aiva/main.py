@@ -194,6 +194,20 @@ def run_connect() -> CompletedProcess:
     connect_command = get_connect_command(default_server_info)
     return subprocess.run(connect_command, shell=True)
 
+
+def run_disconnect() -> CompletedProcess:
+    """
+    Runs disconnect command
+
+    Return:
+        (CompletedProcess) result of disconnect command
+    """
+
+    pid = get_pid_ssh_session()
+    command: str = f'kill -9 {pid}'
+    return subprocess.run(command, shell=True)
+
+
 ############# Commands #############
 
 @app.command(name="servers_list", help="Get list of available servers")
