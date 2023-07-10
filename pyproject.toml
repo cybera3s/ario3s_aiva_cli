@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ario3s-aiva"
-version = "1.0.1"
+version = "1.0.2"
 description = "Manage dynamic ssh tunnel on localhost"
 authors = ["ario <cybera.3s@gmail.com>"]
 readme = "README.md"
