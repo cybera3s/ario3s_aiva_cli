@@ -247,27 +247,32 @@ def disconnect():
         print("[bold red]No Open Session!")
 
 
-# @app.command()
-# def status(
-#     detail: bool = typer.Option(
-#         False, "--detail", "-d", help="Show detail about Connection"
-#     )
-# ):
-#     """
-#     get status of ssh connection
-#     """
-#     status_result = get_status()
+@app.command()
+def status(
+    detail: bool = typer.Option(
+        False, "--detail", "-d", help="Show detail about Connection"
+    )
+):
+    """
+    get status of ssh connection
+    """
+    status: int = get_ssh_session_status()
 
-#     if status_result == 0:
-#         if detail:
-#             data = subprocess.check_output(PROCESS_INFO_CMD, shell=True).decode()
-#             connected_port: str = data.split(" ")[5]
+    if status:
 
-#             print(f"[blue bold]SOCKS proxy Listening at {connected_port}")
+        if detail:
+            bind_port = get_default_config().get("local_port")
+            server_label = get_default_config().get("server_label")
+            ip = get_server_data(server_label)['ip']
 
-#         print("[bold yellow]You have open session!")
-#     else:
-#         print("[bold cyan]You are not connected!")
+            print(f"[blue bold]SOCKS proxy Listening at: {bind_port}")
+            print(f"[blue bold]Server label: {server_label}")
+            print(f"[blue bold]Server IP: {ip}")
+
+        print("[bold green]You have open session!")
+
+    else:
+        print("[bold cyan]You are not connected!")
 
 
 # @app.command()
