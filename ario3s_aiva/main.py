@@ -1,9 +1,9 @@
 import typer
-from typing import Any
 import tomli
 import pathlib
 import os
 import subprocess
+from subprocess import CompletedProcess
 from rich import print
 import sys
 
@@ -35,12 +35,12 @@ PROCESS_INFO_CMD: str = f'pgrep -alx ssh | grep "D {server["local_port"]} {serve
 
 def get_status() -> int:
     """
-        Get Status of ssh session
+    Get Status of ssh session
 
-        Return:
-            0 or greater than zero
-            0 means already have a open ssh
-            more than zero means no ssh session
+    Return:
+        0 or greater than zero
+        0 means already have a open ssh
+        more than zero means no ssh session
     """
     return subprocess.call(PROCESS_INFO_CMD, shell=True, stdout=subprocess.DEVNULL)
 
