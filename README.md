@@ -1,35 +1,51 @@
 # aiva cli tool
 
-<p>a tool to connect to server using ssh</p>
-<p>it creates a SOCKS proxy on provided port default to 4321</p>
+<p>A tool to create SOCKS5 proxy on localhost</p>
 
 
 ## Configuration
-<p>Default config file path is /home/<username>/.aiva.toml
+<p>Default config file path is /home/USERNAME/.aiva.toml
 
 <b>Config file Format</b>
-
 ```
-[server]
+[default]
+username = "<DEFAULT USERNAME>"
+local_port = <DEFAULT BIND PORT>
+server_label = "<DEFAULT LABEL>"
+
+[server_<label>]
 ip = <server-ip>
-server_port = <server-port>
-username = '<username>'
-local_port = <local-port>
+port = <server-port>
+
+[server_<label>]
+...
+
 ```
 </p>
 
 ## Usage
 
-connects to server using ssh
+Connects to server using ssh
 ```
 aiva connect  
 ```
 
-disconnects from server
+Disconnects from server
 ```
 aiva disconnect  
 ```
-get connection status
+
+Get connection status
 ```
-aiva status  
+aiva status [-d] 
+```
+
+List available servers
+```
+aiva list_servers
+```
+
+Change default server
+```
+aiva change-server
 ```
