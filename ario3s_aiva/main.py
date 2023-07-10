@@ -45,6 +45,17 @@ def get_status() -> int:
     return subprocess.call(PROCESS_INFO_CMD, shell=True, stdout=subprocess.DEVNULL)
 
 
+def get_connect_command() -> str:
+    """
+    Get ssh tunnel dynamic command
+    """
+
+    command = f'ssh -f -N -D {server["local_port"]} \
+        {server["username"]}@{server["ip"]} -p {server["server_port"]}'
+
+    return command
+
+
 @app.command()
 def connect(
     port: int = typer.Option(
