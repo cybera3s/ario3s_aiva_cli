@@ -126,13 +126,18 @@ def get_ssh_session_status() -> bool:
         return False
 
 
-def get_connect_command() -> str:
+def get_connect_command(server_info: dict) -> str:
     """
-    Get ssh tunnel dynamic command
+    Get dynamic ssh tunnel command with provided server info data
     """
 
-    command = f'ssh -f -N -D {server["local_port"]} \
-        {server["username"]}@{server["ip"]} -p {server["server_port"]}'
+    ip = server_info["ip"]
+    port = server_info["port"]
+    bind_port = get_default_config().get("local_port")
+    username = get_default_config().get("username")
+
+    command = f'ssh -f -N -D {bind_port} \
+        {username}@{ip} -p {port}'
 
     return command
 
