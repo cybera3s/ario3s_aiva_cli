@@ -1,12 +1,12 @@
 import subprocess
 from subprocess import CompletedProcess
-from config_file import (
+from ario3s_aiva.utils.config_file import (
     get_default_server_label,
     get_server_data,
-    get_connect_command,
     config_default_section,
 )
-from os_commands import find_ssh_process_cmd
+
+from ario3s_aiva.utils.os_commands import find_ssh_process_cmd, get_connect_command
 
 
 def run_connect() -> CompletedProcess:
