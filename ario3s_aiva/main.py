@@ -128,22 +128,24 @@ def restart():
     # Open ssh session
     if get_status() == 0:
         # kill old one
+
         command: str = f'kill -9 $({PROCESS_INFO_CMD} | cut -d " " -f 1)'
         kill_result: int = subprocess.call(command, shell=True)
 
         if kill_result == 0:
-            typer.echo("Session Closed Successfully!")
+            print("[red bold]Session Closed Successfully!")
 
         connect_command = get_connect_command()
 
         kill_result: CompletedProcess = subprocess.run(connect_command, shell=True)
 
         # if 
-        if kill_result.return_code == 0:
+        if kill_result.returncode == 0:
             print(
-                f"[bold green]SOCKS Proxy Successfully created on [/]127.0.0.1:{server['local_port']}"
+                f"[bold green]SOCKS proxy successfully created"\
+                f"\nAddress: [/]127.0.0.1:{server['local_port']}"
             )
 
     # No open ssh
     else:
-        typer.echo("No Open Session!")
+        typer.echo("No SSH Open Session!")
