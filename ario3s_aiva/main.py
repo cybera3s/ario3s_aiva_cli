@@ -30,11 +30,6 @@ def get_config() -> dict:
 app = typer.Typer(callback=get_config)
 
 
-# global server config
-if get_config():
-    print(f"[bold green]Config File Found![/] {CONFIG_FILE}\n")
-
-
 def get_default_config():
     """
     Returns default section of config file
@@ -43,11 +38,38 @@ def get_default_config():
     return get_config()["default"]
 
 
-def validate_default_section():
+def validate_default_section() -> bool:
     default = get_default_config()
 
     if not default["server_label"]:
-        print("[red bold]'server_label' is not present in default section")
+        return False
+
+    if not default["local_port"]:
+        return False
+
+    return True
+
+
+def read_config_data():
+    """
+    Reads config file data
+    """
+
+    # if config file has data
+    if get_config():
+        print(f"[bold green]Config File Found![/] {CONFIG_FILE}\n")
+
+        if not validate_default_section():
+            print("[red bold]Default section is not complete!")
+            print(
+                "[yellow bold]Make sure to provide: 'local_port', 'username', 'server_label' in default section"
+            )
+            sys.exit()
+    else:
+        print("[red bold]Something wrong with config file")
+
+
+read_config_data()
 
 
 def get_default_server_label() -> str:
@@ -55,7 +77,7 @@ def get_default_server_label() -> str:
     Returns default server label from default section
     """
 
-    default = get_default_config
+    default = get_default_config()
     return default["server_label"]
 
 
@@ -136,8 +158,8 @@ def get_connect_command(server_info: dict) -> str:
     bind_port = get_default_config().get("local_port")
     username = get_default_config().get("username")
 
-    command = f'ssh -f -N -D {bind_port} \
-        {username}@{ip} -p {port}'
+    command = f"ssh -f -N -D {bind_port} \
+        {username}@{ip} -p {port}"
 
     return command
 
@@ -168,13 +190,16 @@ def connect():
         print("[bold cyan]You already have open session, enjoy!")
         raise typer.Exit(code=1)
 
-    connect_command = f'ssh -f -N -D {port} \
-        {server["username"]}@{server["ip"]} -p {server["server_port"]}'
+    else:
+        connect_command = get_connect_command()
+        conn_result: CompletedProcess = subprocess.run(connect_command, shell=True)
 
-    res: int = subprocess.call(connect_command, shell=True)
-
-    if res == 0:
-        print(f"[bold green]SOCKS Proxy Successfully created on [/]127.0.0.1:{port}")
+        if conn_result.returncode == 0:
+            print(
+                f"[bold green]SOCKS Proxy Successfully created on [/]127.0.0.1:{port}"
+            )
+        else:
+            print(f"[bold red]SOCKS Proxy failed to create!")
 
 
 # @app.command()
