@@ -1,4 +1,4 @@
-from config_file import config_default_section
+from ario3s_aiva.utils.config_file import config_default_section
 
 
 def get_connect_command(server_info: dict) -> str:
