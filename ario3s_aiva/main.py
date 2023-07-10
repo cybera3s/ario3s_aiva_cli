@@ -35,10 +35,20 @@ if get_config():
     servers: dict = get_config()
 
 
+def get_default_server_label() -> str:
+    """
+    Returns default server label from default section
+    """
+
+    default = get_config()['default']
+    return default['server_label']
+
 def get_process_info_cmd():
     """
     Get process id with its info
     """
+    
+    default_server = 
 
     PROCESS_INFO_CMD: str = f'pgrep -alx ssh | grep "D {server["local_port"]} {server["username"]}@{server["ip"]}"'
     return PROCESS_INFO_CMD
@@ -53,7 +63,7 @@ def get_status() -> int:
         0 means already have a open ssh
         more than zero means no ssh session
     """
-
+    cmd = get_process_info_cmd()
     return subprocess.call(PROCESS_INFO_CMD, shell=True, stdout=subprocess.DEVNULL)
 
 
@@ -77,9 +87,7 @@ def get_servers_list() -> list:
     return list(filter(lambda s: s.startswith("server"), sections.keys()))
 
 
-def get_default_server_label():
-    default = get_config()['default']
-    return default['server_label']
+
 
 
 @app.command(name="servers_list", help="Get list of available servers")
