@@ -25,7 +25,7 @@ def connect():
             bind_port = config_default_section().get("local_port")
 
             print(
-                "[bold green]SOCKS Proxy Successfully "
+                "[bold green]SOCKS proxy successfully "
                 f"created on [/]127.0.0.1:{bind_port}"
             )
         else:
