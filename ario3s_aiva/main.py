@@ -64,16 +64,13 @@ def get_server_data(server_label: str) -> dict:
     """
     Returns server information
 
-
+    (dict) server info
     {
         "ip": IP,
         "port": PORT,
         ...
     }
     """
-
-    servers = get_servers_list()
-
 
     section_name = f"server_{server_label}"
     return get_config()[section_name]
