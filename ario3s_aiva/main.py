@@ -148,6 +148,24 @@ def get_ssh_session_status() -> bool:
         return False
 
 
+def get_pid_ssh_session():
+    """Returns process id of current SSH session"""
+
+    if get_ssh_session_status():
+        default_server = get_default_server_label()
+        server_info = get_server_data(default_server)
+
+        ip = server_info["ip"]
+        bind_port = get_default_config().get("local_port")
+        username = get_default_config().get("username")
+
+        find_cmd = find_ssh_process_cmd(bind_port, username, ip)
+        result = subprocess.run(find_cmd, shell=True, text=True, capture_output=True)
+
+        if result.returncode == 0:
+            pid = result.stdout.split(" ")[0]
+            return pid
+
 def get_connect_command(server_info: dict) -> str:
     """
     Get dynamic ssh tunnel command with provided server info data
@@ -208,20 +226,25 @@ def connect():
             print(f"[bold red]SOCKS Proxy failed to create!")
 
 
-# @app.command()
-# def disconnect():
-#     """
-#     disconnect from server by killing ssh process
-#     """
+@app.command()
+def disconnect():
+    """
+    disconnect from server by killing ssh process
+    """
 
-#     if get_status() == 0:
-#         command: str = f'kill -9 $({PROCESS_INFO_CMD} | cut -d " " -f 1)'
-#         kill_result: int = subprocess.call(command, shell=True)
+    status: int = get_ssh_session_status()
 
-#         if kill_result == 0:
-#             typer.echo("Session Closed Successfully!")
-#     else:
-#         typer.echo("No Open Session!")
+    if status:
+        pid = get_pid_ssh_session()
+        command: str = f'kill -9 {pid}'
+        kill_result: CompletedProcess = subprocess.run(command, shell=True)
+
+        if kill_result.returncode == 0:
+            print("[green]SSH session Closed Successfully!")
+        else:
+            print("[red]Something went wrong with closing SSH session!")
+    else:
+        print("[bold red]No Open Session!")
 
 
 # @app.command()
