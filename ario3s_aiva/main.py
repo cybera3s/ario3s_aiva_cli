@@ -34,7 +34,14 @@ PROCESS_INFO_CMD: str = f'pgrep -alx ssh | grep "D {server["local_port"]} {serve
 
 
 def get_status() -> int:
-    """return status of ssh session"""
+    """
+        Get Status of ssh session
+
+        Return:
+            0 or greater than zero
+            0 means already have a open ssh
+            more than zero means no ssh session
+    """
     return subprocess.call(PROCESS_INFO_CMD, shell=True, stdout=subprocess.DEVNULL)
 
 
@@ -101,3 +108,21 @@ def status(
         print("[bold cyan]You are not connected!")
 
 
+@app.command()
+def restart():
+    """
+    
+    """
+
+    # restart
+    if get_status() == 0:
+
+        command: str = f'kill -9 $({PROCESS_INFO_CMD} | cut -d " " -f 1)'
+        kill_result: int = subprocess.call(command, shell=True)
+
+        if kill_result == 0:
+            typer.echo("Session Closed Successfully!")
+
+    else:
+
+        typer.echo("No Open Session!")
