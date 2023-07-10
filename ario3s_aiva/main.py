@@ -85,7 +85,7 @@ def get_default_server_label():
 @app.command(name="servers_list", help="Get list of available servers")
 def list_servers():
     """
-    get 
+    Get servers list
     """
 
     servers: list = get_servers_list()
