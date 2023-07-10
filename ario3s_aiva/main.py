@@ -125,7 +125,7 @@ def list_servers():
     print("[green]Available Servers:")
 
     for index, server in enumerate(servers, start=1):
-        print(f"{index}- {server.split('_')[1]}")
+        print(f"{index}- {server}")
 
 
 @app.command()
