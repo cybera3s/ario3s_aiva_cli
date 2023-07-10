@@ -259,9 +259,7 @@ def disconnect():
     status: int = get_ssh_session_status()
 
     if status:
-        pid = get_pid_ssh_session()
-        command: str = f'kill -9 {pid}'
-        kill_result: CompletedProcess = subprocess.run(command, shell=True)
+        kill_result = run_disconnect()
 
         if kill_result.returncode == 0:
             print("[green]SSH session Closed Successfully!")
