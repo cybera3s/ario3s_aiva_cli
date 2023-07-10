@@ -29,10 +29,11 @@ def get_config() -> dict:
 
 app = typer.Typer(callback=get_config)
 
+
+
 # global server config
 if get_config():
     print(f"[bold green]Config File Found![/] {CONFIG_FILE}\n")
-    servers: dict = get_config()
 
 
 def get_default_config():
@@ -42,6 +43,11 @@ def get_default_config():
 
     return get_config()["default"]
 
+def validate_default_section():
+    default = get_default_config()
+
+    if not default["server_label"]:
+        print("[red bold]'server_label' is not present in default section")
 
 def get_default_server_label() -> str:
     """
@@ -85,35 +91,38 @@ def get_server_data(server_label: str) -> dict | None:
     return get_config().get(section_name)
 
 
-def get_process_info_cmd():
+def find_ssh_process_cmd(bind_port: str, username: str, ip: str) -> str:
     """
-    Get process id with its info
+    Returns find dynamic ssh tunnel process with provided data
+    """
+
+    return f'pgrep -alx ssh | grep "D {bind_port} {username}@{ip}"'
+
+
+def get_ssh_session_status() -> bool:
+    """
+    Gets status of ssh session
+
+    Return:
+        status (bool): True if ssh session is open otherwise False
     """
 
     default_server = get_default_server_label()
     server_info = get_server_data(default_server)
 
-    if server_info:
-        
-        ip = server_info['ip']
-        local_port = 
-        return f'pgrep -alx ssh | grep "D {server["local_port"]} {server["username"]}@{ip}"'
-    
+    ip = server_info["ip"]
+    local_port = get_default_config().get("local_port")
+    username = get_default_config().get("username")
+
+    find_command = find_ssh_process_cmd(local_port, username, ip)
+    result: CompletedProcess = subprocess.run(
+        find_command, shell=True, stdout=subprocess.DEVNULL
+    )
+
+    if result.returncode == 0:
+        return True
     else:
-        ...
-
-
-def get_status() -> int:
-    """
-    Get Status of ssh session
-
-    Return:
-        0 or greater than zero
-        0 means already have a open ssh
-        more than zero means no ssh session
-    """
-    cmd = get_process_info_cmd()
-    return subprocess.call(PROCESS_INFO_CMD, shell=True, stdout=subprocess.DEVNULL)
+        return False
 
 
 def get_connect_command() -> str:
