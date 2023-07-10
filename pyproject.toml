@@ -10,6 +10,7 @@ packages = [{include = "ario3s_aiva"}]
 python = "^3.10"
 tomli = "^2.0.1"
 typer = {extras = ["all"], version = "^0.7.0"}
+toml = "^0.10.2"
 
 
 [tool.poetry.group.dev.dependencies]
