@@ -181,6 +181,19 @@ def get_connect_command(server_info: dict) -> str:
     return command
 
 
+def run_connect() -> CompletedProcess:
+    """
+    Runs connect command
+    
+    Return:
+        (CompletedProcess) result of connect command
+    """
+
+    label = get_default_server_label()
+    default_server_info = get_server_data(label)
+    connect_command = get_connect_command(default_server_info)
+    return subprocess.run(connect_command, shell=True)
+
 ############# Commands #############
 
 @app.command(name="servers_list", help="Get list of available servers")
@@ -210,12 +223,9 @@ def connect():
         raise typer.Exit(code=1)
 
     else:
-        label = get_default_server_label()
-        default_server_info = get_server_data(label)
-        connect_command = get_connect_command(default_server_info)
-        conn_result: CompletedProcess = subprocess.run(connect_command, shell=True)
+        connect_result: CompletedProcess = run_connect()
 
-        if conn_result.returncode == 0:
+        if connect_result.returncode == 0:
 
             bind_port = get_default_config().get("local_port")
 
@@ -275,46 +285,43 @@ def status(
         print("[bold cyan]You are not connected!")
 
 
-# @app.command()
-# def restart():
-#     """
-#     Restarts the session
-#     """
+@app.command()
+def restart():
+    """
+    Restarts the session
+    """
 
-#     # Open ssh session
-#     if get_status() == 0:
-#         # kill old one
+    status: int = get_ssh_session_status()
 
-#         command: str = f'kill -9 $({PROCESS_INFO_CMD} | cut -d " " -f 1)'
-#         kill_result: int = subprocess.call(command, shell=True)
+    # Open ssh session
+    if status:
+        # kill old one
 
-#         if kill_result == 0:
-#             print("[red bold]Session Closed Successfully!")
+        command: str = f'kill -9 $({PROCESS_INFO_CMD} | cut -d " " -f 1)'
+        kill_result: int = subprocess.call(command, shell=True)
 
-#         connect_command = get_connect_command()
-# mand()
-# def disconnect():
-#     """
-#     disconnect from server by killing ssh process
-#     """
+        if kill_result == 0:
+            print("[red bold]Session Closed Successfully!")
 
-#     if get_status() == 0:
-#         command: str = f'kill -9 $({PROCESS_INFO_CMD} | cut -d " " -f 1)'
-#         kill_result: int = subprocess.call(command, shell=True)
+        connect_command = get_connect_command()
 
-#         if kill_result == 0:
-#             typer.echo("Session Closed Successfully!")
-#     else:
-#         typer.
-#     kill_result: CompletedProcess = subprocess.run(connect_command, shell=True)
+    if get_status() == 0:
+        command: str = f'kill -9 $({PROCESS_INFO_CMD} | cut -d " " -f 1)'
+        kill_result: int = subprocess.call(command, shell=True)
 
-#     # if
-#     if kill_result.returncode == 0:
-#         print(
-#             f"[bold green]SOCKS proxy successfully created"\
-#             f"\nAddress: [/]127.0.0.1:{server['local_port']}"
-#         )
+        if kill_result == 0:
+            typer.echo("Session Closed Successfully!")
+    else:
+        typer.
+    kill_result: CompletedProcess = subprocess.run(connect_command, shell=True)
 
-# # No open ssh
-# else:
-#     print("[blue bold]No Open SSH Session!")
+    # if
+    if kill_result.returncode == 0:
+        print(
+            f"[bold green]SOCKS proxy successfully created"\
+            f"\nAddress: [/]127.0.0.1:{server['local_port']}"
+        )
+
+    # No open ssh
+    else:
+        print("[blue bold]No Open SSH Session!")
