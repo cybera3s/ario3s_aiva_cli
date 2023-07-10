@@ -7,6 +7,7 @@ from ario3s_aiva.commands import (
     status,
     restart,
     list_servers,
+    change_server,
 )
 from ario3s_aiva.utils.config_file import check_config_file
 
@@ -25,6 +26,7 @@ def define_commands(app):
     app.command(name="servers_list", help="Get list of available servers")(
         list_servers.list_servers
     )
+    app.command()(change_server.change_server)
 
 
 define_commands(app)
