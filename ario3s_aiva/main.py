@@ -36,7 +36,10 @@ if get_config():
 
 
 def get_process_info_cmd():
-    # get process id with its info
+    """
+    Get process id with its info
+    """
+
     PROCESS_INFO_CMD: str = f'pgrep -alx ssh | grep "D {server["local_port"]} {server["username"]}@{server["ip"]}"'
     return PROCESS_INFO_CMD
 
@@ -50,6 +53,7 @@ def get_status() -> int:
         0 means already have a open ssh
         more than zero means no ssh session
     """
+
     return subprocess.call(PROCESS_INFO_CMD, shell=True, stdout=subprocess.DEVNULL)
 
 
@@ -72,6 +76,12 @@ def get_servers_list() -> list:
     sections = get_config()
     return list(filter(lambda s: s.startswith("server"), sections.keys()))
 
+
+def get_default_server_label():
+    default = get_config()['default']
+    return default['server_label']
+
+
 @app.command(name="servers_list", help="Get list of available servers")
 def list_servers():
     """
@@ -86,28 +96,25 @@ def list_servers():
         print(f"{index}- {server.split('_')[1]}")
 
 
-# @app.command()
-# def connect(
-#     port: int = typer.Option(
-#         servers["local_port"], "--port", "-p", help="Port to create SOCKS proxy"
-#     )
-# ):
-#     """
-#     connect to server and creates a SOCKS proxy with provided port
-#     """
-#     status: int = get_status()
+@app.command()
+def connect():
+    """
+    Connect to server and creates a SOCKS proxy
+    """
 
-#     if status == 0:
-#         print("[bold cyan]You already have open session, enjoy!")
-#         raise typer.Exit(code=1)
+    status: int = get_status()
 
-#     connect_command = f'ssh -f -N -D {port} \
-#         {server["username"]}@{server["ip"]} -p {server["server_port"]}'
+    if status == 0:
+        print("[bold cyan]You already have open session, enjoy!")
+        raise typer.Exit(code=1)
 
-#     res: int = subprocess.call(connect_command, shell=True)
+    connect_command = f'ssh -f -N -D {port} \
+        {server["username"]}@{server["ip"]} -p {server["server_port"]}'
 
-#     if res == 0:
-#         print(f"[bold green]SOCKS Proxy Successfully created on [/]127.0.0.1:{port}")
+    res: int = subprocess.call(connect_command, shell=True)
+
+    if res == 0:
+        print(f"[bold green]SOCKS Proxy Successfully created on [/]127.0.0.1:{port}")
 
 
 # @app.command()
