@@ -30,7 +30,6 @@ def get_config() -> dict:
 app = typer.Typer(callback=get_config)
 
 
-
 # global server config
 if get_config():
     print(f"[bold green]Config File Found![/] {CONFIG_FILE}\n")
@@ -43,11 +42,13 @@ def get_default_config():
 
     return get_config()["default"]
 
+
 def validate_default_section():
     default = get_default_config()
 
     if not default["server_label"]:
         print("[red bold]'server_label' is not present in default section")
+
 
 def get_default_server_label() -> str:
     """
