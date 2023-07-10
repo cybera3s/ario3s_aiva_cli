@@ -2,11 +2,8 @@ from subprocess import CompletedProcess
 import typer
 
 # Local imports
-from ario3s_aiva.utils.config_file import (
-    get_ssh_session_status,
-    run_connect,
-    get_default_config,
-)
+from ario3s_aiva.utils.run_command import get_ssh_session_status, run_connect
+from ario3s_aiva.utils.config_file import config_default_section
 
 
 def connect():
@@ -24,7 +21,7 @@ def connect():
         connect_result: CompletedProcess = run_connect()
 
         if connect_result.returncode == 0:
-            bind_port = get_default_config().get("local_port")
+            bind_port = config_default_section().get("local_port")
 
             print(
                 "[bold green]SOCKS Proxy Successfully "
