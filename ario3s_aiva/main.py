@@ -102,7 +102,7 @@ def find_ssh_process_cmd(bind_port: str, username: str, ip: str) -> str:
 
 def get_ssh_session_status() -> bool:
     """
-    Gets status of ssh session
+    Gets status of current ssh session
 
     Return:
         status (bool): True if ssh session is open otherwise False
@@ -162,9 +162,9 @@ def connect():
     Connect to server and creates a SOCKS proxy
     """
 
-    status: int = get_status()
+    status: int = get_ssh_session_status()
 
-    if status == 0:
+    if status:
         print("[bold cyan]You already have open session, enjoy!")
         raise typer.Exit(code=1)
 
