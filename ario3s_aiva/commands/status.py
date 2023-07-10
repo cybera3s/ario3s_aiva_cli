@@ -1,4 +1,5 @@
 from typer import Option
+from rich import print
 
 # Local imports
 from ario3s_aiva.utils.run_command import get_ssh_session_status
