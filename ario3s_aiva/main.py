@@ -40,8 +40,25 @@ def get_default_server_label() -> str:
     Returns default server label from default section
     """
 
-    default = get_config()['default']
-    return default['server_label']
+    default = get_config()["default"]
+    return default["server_label"]
+
+
+def get_servers_list() -> list:
+    """
+    Get available servers
+    if any else empty list
+    """
+
+    sections = get_config()
+    # filter sections that starts with 'server_'
+    filterd_sections = list(filter(lambda s: s.startswith("server_"), sections.keys()))
+
+    if len(filterd_sections) > 0:
+        return list(map(lambda server: server.split("_")[1], filterd_sections))
+    else:
+        return []
+
 
 def get_server_data(server_label: str) -> dict:
     """
@@ -55,14 +72,20 @@ def get_server_data(server_label: str) -> dict:
     }
     """
 
+    servers = get_servers_list()
+
+
+    section_name = f"server_{server_label}"
+    return get_config()[section_name]
+
+
 def get_process_info_cmd():
     """
     Get process id with its info
     """
-    
+
     default_server = get_default_server_label()
 
-    if 
     PROCESS_INFO_CMD: str = f'pgrep -alx ssh | grep "D {server["local_port"]} {server["username"]}@{server["ip"]}"'
     return PROCESS_INFO_CMD
 
@@ -89,18 +112,6 @@ def get_connect_command() -> str:
         {server["username"]}@{server["ip"]} -p {server["server_port"]}'
 
     return command
-
-
-def get_servers_list() -> list:
-    """
-    Get available servers
-    """
-
-    sections = get_config()
-    return list(filter(lambda s: s.startswith("server"), sections.keys()))
-
-
-
 
 
 @app.command(name="servers_list", help="Get list of available servers")
