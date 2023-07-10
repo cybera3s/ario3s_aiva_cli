@@ -43,13 +43,26 @@ def get_default_server_label() -> str:
     default = get_config()['default']
     return default['server_label']
 
+def get_server_data(server_label: str) -> dict:
+    """
+    Returns server information
+
+
+    {
+        "ip": IP,
+        "port": PORT,
+        ...
+    }
+    """
+
 def get_process_info_cmd():
     """
     Get process id with its info
     """
     
-    default_server = 
+    default_server = get_default_server_label()
 
+    if 
     PROCESS_INFO_CMD: str = f'pgrep -alx ssh | grep "D {server["local_port"]} {server["username"]}@{server["ip"]}"'
     return PROCESS_INFO_CMD
 
