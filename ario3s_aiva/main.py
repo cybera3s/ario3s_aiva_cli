@@ -99,3 +99,5 @@ def status(
         print("[bold yellow]You have open session!")
     else:
         print("[bold cyan]You are not connected!")
+
+
