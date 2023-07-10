@@ -148,4 +148,4 @@ def restart():
 
     # No open ssh
     else:
-        typer.echo("No SSH Open Session!")
+        print("[blue bold]No Open SSH Session!")
